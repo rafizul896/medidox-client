@@ -8,10 +8,25 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { loginUser } from "@/services/auth/loginUser";
+import { useActionState } from "react";
+import { IErrInputField } from "../../../../types";
 
 const LoginForm = () => {
+  const [state, formAction, isPending] = useActionState(loginUser, null);
+
+  const getFieldError = (fieldName: string) => {
+    if (state && state?.errors) {
+      const error =
+        state?.errors.find((err: IErrInputField) => err?.field === fieldName)
+          ?.message || "";
+
+      return error;
+    }
+  };
+
   return (
-    <form>
+    <form action={formAction}>
       <FieldGroup>
         <div className="grid grid-cols-1 gap-4">
           {/* Email */}
@@ -21,9 +36,13 @@ const LoginForm = () => {
               id="email"
               name="email"
               type="email"
-              placeholder="m@example.com"
-              //   required
+              placeholder="user@example.com"
             />
+            {getFieldError("email") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("email")}
+              </FieldDescription>
+            )}
           </Field>
 
           {/* Password */}
@@ -42,13 +61,20 @@ const LoginForm = () => {
               name="password"
               type="password"
               placeholder="Enter your password"
-              //   required
             />
+
+            {getFieldError("password") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("password")}
+              </FieldDescription>
+            )}
           </Field>
         </div>
         <FieldGroup className="mt-4">
           <Field>
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Logging..." : "Login"}
+            </Button>
 
             <FieldDescription className="px-6 text-center">
               Don&apos;t have an account?{" "}
