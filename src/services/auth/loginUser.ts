@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
+import {
+  getDefaultDashboardRoute,
+  isValidRedirectForRole,
+  UserRole,
+} from "@/lib/auth.utils";
 import { parse } from "cookie";
-import { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import z from "zod";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const loginValidationZodSchema = z.object({
   email: z.email("Please provide a valid email address"),
@@ -16,7 +21,7 @@ export const loginUser = async (
   formData: any,
 ): Promise<any> => {
   try {
-    const redirectTo = formData.get("redirect") || null;
+    const redirectTo = formData.get("redirect");
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
@@ -50,7 +55,7 @@ export const loginUser = async (
 
     const setCookieHeaders = response.headers?.getSetCookie();
     const res = await response.json();
-    
+
     if (!res.success) {
       return { message: "Login Failed" };
     }
@@ -98,17 +103,28 @@ export const loginUser = async (
       sameSite: refreshTokenObject["SameSite"] || "none",
     });
 
-    const verifiedToken: JwtPayload | string = jwt.verify(
+    const verifiedToken = jwt.verify(
       accessTokenObject.accessToken,
       process.env.JWT_ACCESS_SECRET as string,
-    );
+    ) as JwtPayload;
 
-    if (typeof verifiedToken === "string") {
-      throw new Error("Invalid token");
+    console.log(verifiedToken)
+
+    const userRole: UserRole = verifiedToken.role;
+
+    if (redirectTo && userRole) {
+      const requestedPath = redirectTo.toString();
+
+      if (isValidRedirectForRole(requestedPath, userRole)) {
+        redirect(requestedPath);
+      } else {
+        redirect(getDefaultDashboardRoute(userRole));
+      }
     }
-
-    return res;
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw err;
+    }
     console.log(err);
     return { message: "Login Failed" };
   }

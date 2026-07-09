@@ -7,7 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const LoginPage = () => {
+const LoginPage = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ redirect?: string }>;
+}) => {
+  const params = (await searchParams) || {};
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md shadow-lg">
@@ -17,9 +23,8 @@ const LoginPage = () => {
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
-
         <CardContent>
-          <LoginForm />
+          <LoginForm redirect={params.redirect} />
         </CardContent>
       </Card>
     </div>
