@@ -108,8 +108,6 @@ export const loginUser = async (
       process.env.JWT_ACCESS_SECRET as string,
     ) as JwtPayload;
 
-    console.log(verifiedToken)
-
     const userRole: UserRole = verifiedToken.role;
 
     if (redirectTo && userRole) {
@@ -121,6 +119,8 @@ export const loginUser = async (
         redirect(getDefaultDashboardRoute(userRole));
       }
     }
+
+    redirect(getDefaultDashboardRoute(userRole));
   } catch (err: any) {
     if (err?.digest?.startsWith("NEXT_REDIRECT")) {
       throw err;
