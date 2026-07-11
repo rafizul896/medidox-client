@@ -15,7 +15,6 @@ export const proxy = async (req: NextRequest) => {
 
   const accessToken = await getCookie("accessToken");
 
-
   if (accessToken) {
     const verifiedToken: JwtPayload | string = jwt.verify(
       accessToken,

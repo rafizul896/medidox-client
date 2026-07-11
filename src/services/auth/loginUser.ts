@@ -57,7 +57,7 @@ export const loginUser = async (
     const res = await response.json();
 
     if (!res.success) {
-      return { message: "Login Failed" };
+      throw new Error(res.message || "Login Failed");
     }
 
     if (setCookieHeaders && setCookieHeaders?.length > 0) {
@@ -84,9 +84,7 @@ export const loginUser = async (
       throw new Error("Tokens not found in cookies");
     }
 
-  
-
-   await setCookie("accessToken", accessTokenObject.accessToken, {
+    await setCookie("accessToken", accessTokenObject.accessToken, {
       secure: true,
       httpOnly: true,
       maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60,
@@ -116,16 +114,20 @@ export const loginUser = async (
       if (isValidRedirectForRole(requestedPath, userRole)) {
         redirect(requestedPath);
       } else {
-        redirect(getDefaultDashboardRoute(userRole));
+        redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
       }
     }
 
-    redirect(getDefaultDashboardRoute(userRole));
+    redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
   } catch (err: any) {
     if (err?.digest?.startsWith("NEXT_REDIRECT")) {
       throw err;
     }
     console.log(err);
-    return { message: "Login Failed" };
+    return {
+      success: false,
+      message:
+        process.env.NODE_ENV === "development" ? err.message : "Login Failed",
+    };
   }
 };
