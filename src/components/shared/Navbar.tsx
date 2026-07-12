@@ -7,8 +7,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import { getCookie } from "@/services/auth/tokenHandler";
 import LogoutButton from "./LogoutButton";
+import UserDropdown from "../modules/Dashboard/UserDropdown";
+import { getUserInfo } from "@/services/auth/getUserInfo";
+import { IUserInfo } from "../../../types/user.interface";
 
 const Navbar = async () => {
   const navItems = [
@@ -19,9 +21,7 @@ const Navbar = async () => {
     { href: "#", label: "NGOs" },
   ];
 
-  const accessToken = await getCookie("accessToken");
-
-  console.log(accessToken);
+  const userInfo = (await getUserInfo()) as IUserInfo;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur  dark:bg-background/95">
@@ -43,8 +43,8 @@ const Navbar = async () => {
         </nav>
 
         <div className="hidden md:flex items-center space-x-2">
-          {accessToken ? (
-            <LogoutButton />
+          {userInfo ? (
+            <UserDropdown userInfo={userInfo} />
           ) : (
             <Link href="/login" className="text-lg font-medium">
               <Button>Login</Button>
@@ -75,8 +75,8 @@ const Navbar = async () => {
                 ))}
                 <div className="border-t pt-4 flex flex-col space-y-4">
                   <div className="flex justify-center"></div>
-                  {accessToken ? (
-                    <LogoutButton />
+                  {userInfo ? (
+                    <UserDropdown userInfo={userInfo} />
                   ) : (
                     <Link href="/login" className="text-lg font-medium">
                       <Button>Login</Button>
