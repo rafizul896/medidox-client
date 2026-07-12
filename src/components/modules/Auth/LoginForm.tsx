@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/services/auth/loginUser";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { IErrInputField } from "../../../../types";
+import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 const LoginForm = ({ redirect }: { redirect?: string }) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
+
+  console.log("state", state);
 
   const getFieldError = (fieldName: string) => {
     if (state && state?.errors) {
@@ -24,6 +28,16 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
       return error;
     }
   };
+
+  useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message)
+    }
+
+    if (state && state.success && state.message) {
+      toast.success(state.message)
+    }
+  }, [state]);
 
   return (
     <form action={formAction}>
@@ -74,7 +88,7 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
         <FieldGroup className="mt-4">
           <Field>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Logging..." : "Login"}
+              {isPending ? <Loader className="animate-spin"/>: "Login"}
             </Button>
 
             <FieldDescription className="px-6 text-center">
