@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { Settings, User, User2 } from "lucide-react";
+import { LayoutDashboardIcon, Settings, User } from "lucide-react";
 
 const UserDropdown = ({ userInfo }: { userInfo: IUserInfo }) => {
   const handleLogout = async () => {
@@ -22,10 +22,10 @@ const UserDropdown = ({ userInfo }: { userInfo: IUserInfo }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-full border border-border bg-background px-2 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-        <User2 className="h-4 w-4" />
+        <User className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
               <p className="text-xs text-muted-foreground">{userInfo.email}</p>
@@ -34,11 +34,11 @@ const UserDropdown = ({ userInfo }: { userInfo: IUserInfo }) => {
               </p>
             </div>
           </DropdownMenuLabel>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/dashboard" className="flex w-full items-center">
-            <User className="mr-2 h-4 w-4" />
+            <LayoutDashboardIcon className="mr-2 h-4 w-4" />
             Dashboard
           </Link>
         </DropdownMenuItem>
@@ -46,12 +46,6 @@ const UserDropdown = ({ userInfo }: { userInfo: IUserInfo }) => {
           <Link href="/my-profile" className="flex w-full items-center">
             <User className="mr-2 h-4 w-4" />
             Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/change-password" className="flex w-full items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            Change Password
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
