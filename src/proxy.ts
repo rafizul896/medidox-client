@@ -1,20 +1,19 @@
 import { JwtPayload } from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
 import {
   getDefaultDashboardRoute,
   getRouteOwner,
   isAuthRoute,
   UserRole,
 } from "./lib/auth.utils";
+import { deleteCookie, getCookie } from "./services/auth/tokenHandler";
 
 export const proxy = async (req: NextRequest) => {
-  const cookieStore = await cookies();
   const pathname = req.nextUrl.pathname;
   let userRole: UserRole | null = null;
 
-  const accessToken = req.cookies.get("accessToken")?.value || null;
+  const accessToken = await getCookie("accessToken");
 
   if (accessToken) {
     const verifiedToken: JwtPayload | string = jwt.verify(
@@ -23,8 +22,8 @@ export const proxy = async (req: NextRequest) => {
     );
 
     if (typeof verifiedToken === "string") {
-      cookieStore.delete("accessToken");
-      cookieStore.delete("refreshToken");
+      await deleteCookie("accessToken");
+      await deleteCookie("refreshToken");
 
       return NextResponse.redirect(new URL("/login", req.url));
     }

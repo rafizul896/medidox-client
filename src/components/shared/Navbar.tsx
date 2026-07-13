@@ -7,8 +7,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import LogoutButton from "./LogoutButton";
+import UserDropdown from "../modules/Dashboard/UserDropdown";
+import { getUserInfo } from "@/services/auth/getUserInfo";
+import { IUserInfo } from "../../../types/user.interface";
 
-const Navbar = () => {
+const Navbar = async () => {
   const navItems = [
     { href: "#", label: "Consultation" },
     { href: "#", label: "Health Plans" },
@@ -16,6 +20,9 @@ const Navbar = () => {
     { href: "#", label: "Diagnostics" },
     { href: "#", label: "NGOs" },
   ];
+
+  const userInfo = (await getUserInfo()) as IUserInfo;
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur  dark:bg-background/95">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -36,9 +43,13 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden md:flex items-center space-x-2">
-          <Link href="/login" className="text-lg font-medium">
-            <Button>Login</Button>
-          </Link>
+          {userInfo ? (
+            <UserDropdown userInfo={userInfo} />
+          ) : (
+            <Link href="/login" className="text-lg font-medium">
+              <Button>Login</Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu */}
@@ -64,9 +75,13 @@ const Navbar = () => {
                 ))}
                 <div className="border-t pt-4 flex flex-col space-y-4">
                   <div className="flex justify-center"></div>
-                  <Link href="/login" className="text-lg font-medium">
-                    <Button>Login</Button>
-                  </Link>
+                  {userInfo ? (
+                    <UserDropdown userInfo={userInfo} />
+                  ) : (
+                    <Link href="/login" className="text-lg font-medium">
+                      <Button>Login</Button>
+                    </Link>
+                  )}
                 </div>
               </nav>
             </SheetContent>

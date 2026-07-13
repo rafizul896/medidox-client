@@ -10,14 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { registerPatient } from "@/services/auth/registerPatient";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { IErrInputField } from "../../../../types";
+import { Loader } from "lucide-react";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [state, formAction, isPending] = useActionState(registerPatient, null);
-
-  console.log(state);
-  console.log(isPending);
 
   const getFieldError = (fieldName: string) => {
     if (state && state?.errors) {
@@ -28,6 +27,12 @@ const RegisterForm = () => {
       return error;
     }
   };
+
+  useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
     <form action={formAction} className="md:mt-3">
@@ -103,7 +108,11 @@ const RegisterForm = () => {
         <FieldGroup className="mt-4">
           <Field>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating Account..." : "Create Account"}
+              {isPending ? (
+                <Loader className="animate-spin" />
+              ) : (
+                "Create Account"
+              )}
             </Button>
             <FieldDescription className="px-6 text-center">
               Already have an account?{" "}

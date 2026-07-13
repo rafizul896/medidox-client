@@ -6,10 +6,10 @@ import {
   UserRole,
 } from "@/lib/auth.utils";
 import { parse } from "cookie";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { setCookie } from "./tokenHandler";
 
 const loginValidationZodSchema = z.object({
   email: z.email("Please provide a valid email address"),
@@ -57,7 +57,7 @@ export const loginUser = async (
     const res = await response.json();
 
     if (!res.success) {
-      return { message: "Login Failed" };
+      throw new Error(res.message || "Login Failed");
     }
 
     if (setCookieHeaders && setCookieHeaders?.length > 0) {
@@ -84,9 +84,7 @@ export const loginUser = async (
       throw new Error("Tokens not found in cookies");
     }
 
-    const cookieStore = await cookies();
-
-    cookieStore.set("accessToken", accessTokenObject.accessToken, {
+    await setCookie("accessToken", accessTokenObject.accessToken, {
       secure: true,
       httpOnly: true,
       maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60,
@@ -94,7 +92,7 @@ export const loginUser = async (
       sameSite: accessTokenObject["SameSite"] || "none",
     });
 
-    cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {
+    await setCookie("refreshToken", refreshTokenObject.refreshToken, {
       secure: true,
       httpOnly: true,
       maxAge:
@@ -108,8 +106,6 @@ export const loginUser = async (
       process.env.JWT_ACCESS_SECRET as string,
     ) as JwtPayload;
 
-    console.log(verifiedToken)
-
     const userRole: UserRole = verifiedToken.role;
 
     if (redirectTo && userRole) {
@@ -118,14 +114,20 @@ export const loginUser = async (
       if (isValidRedirectForRole(requestedPath, userRole)) {
         redirect(requestedPath);
       } else {
-        redirect(getDefaultDashboardRoute(userRole));
+        redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
       }
     }
+
+    redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
   } catch (err: any) {
     if (err?.digest?.startsWith("NEXT_REDIRECT")) {
       throw err;
     }
     console.log(err);
-    return { message: "Login Failed" };
+    return {
+      success: false,
+      message:
+        process.env.NODE_ENV === "development" ? err.message : "Login Failed",
+    };
   }
 };

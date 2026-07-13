@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import z from "zod";
+import { loginUser } from "./loginUser";
 
 const registerValidationZodSchema = z
   .object({
@@ -70,11 +71,23 @@ export const registerPatient = async (
         body: newFormData,
       },
     ).then((res) => res.json());
+
     console.log(res);
 
+    if (res.success) {
+      await loginUser(_currentState, formData);
+    }
+
     return res;
-  } catch (err) {
-    console.log(err);
-    return { error: "Registration failed" };
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw err;
+    }
+    console.log(err.message);
+    return {
+      success: false,
+      message:
+        process.env.NODE_ENV === "development" ? err.message : "Registration Failed. Please try again!",
+    };
   }
 };
