@@ -3,13 +3,7 @@
 
 import { serverFetch } from "@/lib/serverFatch";
 import { zodValidator } from "@/lib/zodValidator";
-import z from "zod";
-
-const createSpecialityZodSchema = z.object({
-  title: z.string({
-    error: "Title is required!",
-  }),
-});
+import { createSpecialityZodSchema } from "@/zod/specialities.validation";
 
 export const createSpeciality = async (_prevState: any, formData: FormData) => {
   try {
@@ -21,7 +15,10 @@ export const createSpeciality = async (_prevState: any, formData: FormData) => {
       return zodValidator(payload, createSpecialityZodSchema);
     }
 
-    const validatedPayload = zodValidator(payload, createSpecialityZodSchema).data;
+    const validatedPayload = zodValidator(
+      payload,
+      createSpecialityZodSchema,
+    ).data;
 
     const newFormData = new FormData();
     newFormData.append("data", JSON.stringify(validatedPayload));

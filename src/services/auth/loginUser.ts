@@ -7,16 +7,11 @@ import {
 } from "@/lib/auth.utils";
 import { parse } from "cookie";
 import { redirect } from "next/navigation";
-import z from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { setCookie } from "./tokenHandler";
 import { serverFetch } from "@/lib/serverFatch";
 import { zodValidator } from "@/lib/zodValidator";
-
-const loginValidationZodSchema = z.object({
-  email: z.email("Please provide a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-});
+import { loginValidationZodSchema } from "@/zod/auth.validation";
 
 export const loginUser = async (
   _currentState: any,
@@ -27,13 +22,12 @@ export const loginUser = async (
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
-    const payload  = {
+    const payload = {
       email: formData.get("email"),
       password: formData.get("password"),
     };
 
-
-    if ((zodValidator(payload, loginValidationZodSchema).success === false)) {
+    if (zodValidator(payload, loginValidationZodSchema).success === false) {
       return zodValidator(payload, loginValidationZodSchema);
     }
 
@@ -119,7 +113,6 @@ export const loginUser = async (
     if (err?.digest?.startsWith("NEXT_REDIRECT")) {
       throw err;
     }
-    console.log(err);
     return {
       success: false,
       message:
