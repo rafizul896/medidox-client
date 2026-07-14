@@ -2,6 +2,8 @@
 "use server";
 import z from "zod";
 import { loginUser } from "./loginUser";
+import { serverFetch } from "@/lib/serverFatch";
+import { zodValidator } from "@/lib/zodValidator";
 
 const registerValidationZodSchema = z
   .object({
@@ -31,7 +33,7 @@ export const registerPatient = async (
   formData: any,
 ): Promise<any> => {
   try {
-    const validationData = {
+    const payload = {
       name: formData.get("name"),
       address: formData.get("address"),
       email: formData.get("email"),
@@ -39,40 +41,32 @@ export const registerPatient = async (
       confirmPassword: formData.get("confirmPassword"),
     };
 
-    const validatedFields =
-      registerValidationZodSchema.safeParse(validationData);
-
-    if (!validatedFields.success) {
-      return {
-        success: false,
-        errors: validatedFields.error.issues.map((issue) => ({
-          field: issue.path[0],
-          message: issue.message,
-        })),
-      };
+    if (zodValidator(payload, registerValidationZodSchema).success === false) {
+      return zodValidator(payload, registerValidationZodSchema);
     }
 
+    const validatedPayload: any = zodValidator(
+      payload,
+      registerValidationZodSchema,
+    ).data;
+
     const registerData = {
-      password: formData.get("password"),
+      password: validatedPayload.password,
       patient: {
-        name: formData.get("name"),
-        address: formData.get("address"),
-        email: formData.get("email"),
+        name: validatedPayload.name,
+        address: validatedPayload.address,
+        email: validatedPayload.email,
       },
     };
 
     const newFormData = new FormData();
     newFormData.append("data", JSON.stringify(registerData));
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/user/create-patient`,
-      {
-        method: "POST",
+    const res = await serverFetch
+      .post(`/user/create-patient`, {
         body: newFormData,
-      },
-    ).then((res) => res.json());
-
-    console.log(res);
+      })
+      .then((res) => res.json());
 
     if (res.success) {
       await loginUser(_currentState, formData);
@@ -87,7 +81,9 @@ export const registerPatient = async (
     return {
       success: false,
       message:
-        process.env.NODE_ENV === "development" ? err.message : "Registration Failed. Please try again!",
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Registration Failed. Please try again!",
     };
   }
 };

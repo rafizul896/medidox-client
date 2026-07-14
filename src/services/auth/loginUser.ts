@@ -10,6 +10,8 @@ import { redirect } from "next/navigation";
 import z from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { setCookie } from "./tokenHandler";
+import { serverFetch } from "@/lib/serverFatch";
+import { zodValidator } from "@/lib/zodValidator";
 
 const loginValidationZodSchema = z.object({
   email: z.email("Please provide a valid email address"),
@@ -30,28 +32,22 @@ export const loginUser = async (
       password: formData.get("password"),
     };
 
-    const validatedFields = loginValidationZodSchema.safeParse(loginData);
 
-    if (!validatedFields.success) {
-      return {
-        success: false,
-        errors: validatedFields.error.issues.map((issue) => ({
-          field: issue.path[0],
-          message: issue.message,
-        })),
-      };
+    if ((zodValidator(loginData, loginValidationZodSchema).success = false)) {
+      return zodValidator(loginData, loginValidationZodSchema);
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/login`,
-      {
-        method: "POST",
-        body: JSON.stringify(loginData),
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const validatedPayload = zodValidator(
+      loginData,
+      loginValidationZodSchema,
+    ).data;
+
+    const response = await serverFetch.post(`/auth/login`, {
+      body: JSON.stringify(validatedPayload),
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
 
     const setCookieHeaders = response.headers?.getSetCookie();
     const res = await response.json();
