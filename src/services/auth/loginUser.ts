@@ -27,18 +27,18 @@ export const loginUser = async (
     let accessTokenObject: null | any = null;
     let refreshTokenObject: null | any = null;
 
-    const loginData = {
+    const payload  = {
       email: formData.get("email"),
       password: formData.get("password"),
     };
 
 
-    if ((zodValidator(loginData, loginValidationZodSchema).success = false)) {
-      return zodValidator(loginData, loginValidationZodSchema);
+    if ((zodValidator(payload, loginValidationZodSchema).success === false)) {
+      return zodValidator(payload, loginValidationZodSchema);
     }
 
     const validatedPayload = zodValidator(
-      loginData,
+      payload,
       loginValidationZodSchema,
     ).data;
 
