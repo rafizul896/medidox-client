@@ -28,6 +28,7 @@ const SpecialitiesFormDialog = ({
 }: ISpecialitiesFormDialogProps) => {
   const [state, formAction, isPending] = useActionState(createSpeciality, null);
 
+
   useEffect(() => {
     if (state && state?.success) {
       toast.success(state?.message);
@@ -46,14 +47,14 @@ const SpecialitiesFormDialog = ({
         <form action={formAction} className="space-y-4">
           <Field>
             <FieldLabel htmlFor="title">Title</FieldLabel>
-            <Input id="title" name="title" placeholder="Cardiology" required />
+            <Input id="title" name="title" placeholder="Cardiology" />
             <FieldValidationError fieldName="title" state={state} />
           </Field>
 
           <Field>
             <FieldLabel htmlFor="file">Upload Icon</FieldLabel>
-
             <Input id="file" name="file" type="file" accept="image/*" />
+
             <FieldValidationError fieldName="file" state={state} />
           </Field>
 

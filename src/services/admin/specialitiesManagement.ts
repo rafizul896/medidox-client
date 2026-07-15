@@ -11,7 +11,7 @@ export const createSpeciality = async (_prevState: any, formData: FormData) => {
       title: formData.get("title"),
     };
 
-    if ((zodValidator(payload, createSpecialityZodSchema).success = false)) {
+    if (zodValidator(payload, createSpecialityZodSchema).success === false) {
       return zodValidator(payload, createSpecialityZodSchema);
     }
 
@@ -27,8 +27,12 @@ export const createSpeciality = async (_prevState: any, formData: FormData) => {
       newFormData.append("file", formData.get("file") as Blob);
     }
 
-    const res = await serverFetch.post("/specialties", { body: newFormData });
+    const res = await serverFetch.post("/specialties", {
+      body: newFormData,
+    });
     const result = await res.json();
+
+    console.log(res);
 
     return result;
   } catch (err: any) {
