@@ -10,32 +10,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/services/auth/loginUser";
 import { useActionState, useEffect } from "react";
-import { IErrInputField } from "../../../../types";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import FieldValidationError from "@/components/shared/FieldError";
 
 const LoginForm = ({ redirect }: { redirect?: string }) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
 
-  console.log("state", state);
-
-  const getFieldError = (fieldName: string) => {
-    if (state && state?.errors) {
-      const error =
-        state?.errors.find((err: IErrInputField) => err?.field === fieldName)
-          ?.message || "";
-
-      return error;
-    }
-  };
 
   useEffect(() => {
     if (state && !state.success && state.message) {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state && state.success && state.message) {
-      toast.success(state.message)
+      toast.success(state.message);
     }
   }, [state]);
 
@@ -53,13 +42,8 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
               type="email"
               placeholder="user@example.com"
             />
-            {getFieldError("email") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("email")}
-              </FieldDescription>
-            )}
+            <FieldValidationError fieldName="email" state={state} />
           </Field>
-
           {/* Password */}
           <Field>
             <div className="flex  justify-between">
@@ -77,18 +61,13 @@ const LoginForm = ({ redirect }: { redirect?: string }) => {
               type="password"
               placeholder="Enter your password"
             />
-
-            {getFieldError("password") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("password")}
-              </FieldDescription>
-            )}
+            <FieldValidationError fieldName="password" state={state} />
           </Field>
         </div>
         <FieldGroup className="mt-4">
           <Field>
             <Button type="submit" disabled={isPending}>
-              {isPending ? <Loader className="animate-spin"/>: "Login"}
+              {isPending ? <Loader className="animate-spin" /> : "Login"}
             </Button>
 
             <FieldDescription className="px-6 text-center">
