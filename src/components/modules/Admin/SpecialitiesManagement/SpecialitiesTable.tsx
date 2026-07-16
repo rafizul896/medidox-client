@@ -1,23 +1,22 @@
 "use client";
-
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
 import ManagementTable from "@/components/shared/ManagementTable";
 import { deleteSpeciality } from "@/services/admin/specialitiesManagement";
+import { ISpecialty } from "@/types/specialities.interface";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { specialitiesColumns } from "./specialitiesColumns";
-import { ISpeciality } from "../../../../../types/specialities.interface";
 
-interface ISpecialityTableProps {
-  specialities: ISpeciality[];
+interface SpecialityTableProps {
+  specialities: ISpecialty[];
 }
 
-const SpecialitiesTable = ({ specialities }: ISpecialityTableProps) => {
+const SpecialitiesTable = ({ specialities }: SpecialityTableProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [deletingSpeciality, setDeletingSpeciality] =
-    useState<ISpeciality | null>(null);
+    useState<ISpecialty | null>(null);
   const [isDeletingDialog, setIsDeletingDialog] = useState(false);
 
   const handleRefresh = () => {
@@ -26,7 +25,7 @@ const SpecialitiesTable = ({ specialities }: ISpecialityTableProps) => {
     });
   };
 
-  const handleDelete = (speciality: ISpeciality) => {
+  const handleDelete = (speciality: ISpecialty) => {
     setDeletingSpeciality(speciality);
   };
 

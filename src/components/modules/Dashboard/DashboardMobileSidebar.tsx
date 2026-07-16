@@ -1,19 +1,19 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { INavSection } from "../../../../types/dashboard.interface";
-import { IUserInfo } from "../../../../types/user.interface";
-import Link from "next/link";
-import { SheetTitle } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { SheetTitle } from "@/components/ui/sheet";
 import { getIconComponent } from "@/lib/icon-mapper";
+import { cn } from "@/lib/utils";
+import { NavSection } from "@/types/dashboard.interface";
+import { UserInfo } from "@/types/user.interface";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface DashboardMobileSidebarContentProps {
-  userInfo: IUserInfo;
-  navItems: INavSection[];
+  userInfo: UserInfo;
+  navItems: NavSection[];
   dashboardHome: string;
 }
 
@@ -46,7 +46,7 @@ const DashboardMobileSidebar = ({
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
-                  const Icon = getIconComponent(item.icon as string);
+                  const Icon = getIconComponent(item.icon);
 
                   return (
                     <Link
@@ -56,7 +56,7 @@ const DashboardMobileSidebar = ({
                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
                         isActive
                           ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       )}
                     >
                       <Icon className="h-4 w-4" />
@@ -83,11 +83,11 @@ const DashboardMobileSidebar = ({
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
             <span className="text-sm font-semibold text-primary">
-              {userInfo.email.charAt(0).toUpperCase()}
+              {userInfo.name.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="text-sm font-medium truncate">{userInfo.email}</p>
+            <p className="text-sm font-medium truncate">{userInfo.name}</p>
             <p className="text-xs text-muted-foreground capitalize">
               {userInfo.role.toLowerCase()}
             </p>

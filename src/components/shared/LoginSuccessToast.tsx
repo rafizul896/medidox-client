@@ -9,20 +9,14 @@ const LoginSuccessToast = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const loggedIn = searchParams.get("loggedIn");
-    
-    if (!loggedIn) {
-      return;
+    if (searchParams.get("loggedIn") === "true") {
+      toast.success("You have been logged in successfully.");
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("loggedIn");
+      router.replace(newUrl.toString());
     }
-
-    toast.success("You have been logged in successfully!");
-
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.delete("loggedIn");
-
-    router.replace(newUrl.toString());
   }, [searchParams, router]);
-
   return null;
 };
 

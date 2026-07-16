@@ -1,62 +1,82 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { AlertCircle, ArrowLeft, Home } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Home } from "lucide-react";
+import { Suspense } from "react";
 
-export default function NotFound() {
+function NotFoundContent() {
   const router = useRouter();
 
-  const handleGoBack = () => {
-    router.back();
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="text-center space-y-8 p-8 max-w-md mx-auto">
-        <div className="space-y-4">
-          <h1 className="text-9xl font-bold text-gray-800 dark:text-gray-200 animate-pulse">
-            404
-          </h1>
-          <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-background to-muted/20">
+      <div className="container flex flex-col items-center justify-center gap-8 px-4 text-center">
+        <div className="scale-in">
+          <div className="relative">
+            {/* Animated Circle */}
+            <div className="absolute inset-0 rounded-full bg-destructive/10 pulse-scale" />
+
+            {/* 404 Text */}
+            <div className="relative z-10 flex h-48 w-48 items-center justify-center">
+              <h1 className="text-8xl font-bold text-primary fade-up-delay-1">
+                404
+              </h1>
+            </div>
+
+            {/* Floating Icon */}
+            <div className="absolute -top-4 -right-4 rounded-full bg-destructive p-3 text-destructive-foreground shadow-lg float-icon">
+              <AlertCircle className="h-8 w-8" />
+            </div>
+          </div>
+        </div>{" "}
+        <div className="space-y-4 fade-up-delay-2">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Page Not Found
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Sorry, we couldn`&#39;`t find the page you`&#39;`re looking for. It
-            might have been moved, deleted, or you entered the wrong URL.
+          <p className="text-lg text-muted-foreground max-w-md">
+            Oops! The page you&apos;re looking for doesn&apos;t exist. It might
+            have been moved or deleted.
           </p>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-          <button
-            onClick={handleGoBack}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors duration-200 font-medium"
+        <div className="flex flex-col sm:flex-row gap-4 fade-up-delay-3">
+          <Button
+            size="lg"
+            onClick={() => router.back()}
+            variant="outline"
+            className="gap-2"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft className="h-4 w-4" />
             Go Back
-          </button>
-
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium"
-          >
-            <Home size={20} />
-            Return Home
-          </Link>
-        </div>
-
-        <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">
-          <p>
-            Need help?{" "}
-            <Link
-              href="/contact"
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-            >
-              Contact us
+          </Button>
+          <Button size="lg" asChild className="gap-2">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+              Back to Home
             </Link>
-          </p>
+          </Button>
         </div>
+        {/* Decorative Elements */}
+        <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-primary/5 blur-3xl glow-1" />
+        <div className="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl glow-2" />
       </div>
     </div>
+  );
+}
+
+export default function NotFound() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-8xl font-bold text-primary">404</h1>
+            <p className="text-lg text-muted-foreground mt-4">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <NotFoundContent />
+    </Suspense>
   );
 }

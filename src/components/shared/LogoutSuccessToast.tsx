@@ -9,18 +9,14 @@ const LogoutSuccessToast = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const loggedOut = searchParams.get("loggedOut");
+    if (searchParams.get("loggedOut") === "true") {
+      toast.success("You have been logged out successfully.");
 
-    if (!loggedOut) return;
-
-    toast.success("You have been logged out successfully!");
-
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.delete("loggedOut");
-
-    router.replace(newUrl.toString());
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("loggedOut");
+      router.replace(newUrl.toString());
+    }
   }, [searchParams, router]);
-
   return null;
 };
 

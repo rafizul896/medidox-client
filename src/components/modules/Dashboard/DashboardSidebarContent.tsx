@@ -1,18 +1,18 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { INavSection } from "../../../../types/dashboard.interface";
-import { IUserInfo } from "../../../../types/user.interface";
-import Link from "next/link";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { getIconComponent } from "@/lib/icon-mapper";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { getIconComponent } from "@/lib/icon-mapper";
+import { cn } from "@/lib/utils";
+import { NavSection } from "@/types/dashboard.interface";
+import { UserInfo } from "@/types/user.interface";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-interface IDashboardSidebarContentProps {
-  userInfo: IUserInfo;
-  navItems: INavSection[];
+interface DashboardSidebarContentProps {
+  userInfo: UserInfo;
+  navItems: NavSection[];
   dashboardHome: string;
 }
 
@@ -20,9 +20,8 @@ const DashboardSidebarContent = ({
   userInfo,
   navItems,
   dashboardHome,
-}: IDashboardSidebarContentProps) => {
+}: DashboardSidebarContentProps) => {
   const pathname = usePathname();
-
   return (
     <div className="hidden md:flex h-full w-64 flex-col border-r bg-card">
       {/* Logo/Brand */}
@@ -45,7 +44,7 @@ const DashboardSidebarContent = ({
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
-                  const Icon = getIconComponent(item.icon as string);
+                  const Icon = getIconComponent(item.icon);
 
                   return (
                     <Link
@@ -85,11 +84,11 @@ const DashboardSidebarContent = ({
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
             <span className="text-sm font-semibold text-primary">
-              {userInfo.email.charAt(0).toUpperCase()}
+              {userInfo.name.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="text-sm font-medium truncate">{userInfo.email}</p>
+            <p className="text-sm font-medium truncate">{userInfo.name}</p>
             <p className="text-xs text-muted-foreground capitalize">
               {userInfo.role.toLowerCase()}
             </p>
