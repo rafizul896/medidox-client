@@ -21,18 +21,21 @@ export async function updateMyProfile(formData: FormData) {
 
     // Get all form fields except the file
     const data: any = {};
+    const numberFields = ["experience", "appointmentFee"];
+
     formData.forEach((value, key) => {
       if (key !== "file" && value) {
-        data[key] = value;
+        data[key] = numberFields.includes(key) ? Number(value) : value;
       }
     });
 
     // Add the data as JSON string
     uploadFormData.append("data", JSON.stringify(data));
+    console.log("//", data);
 
     // Add the file if it exists
     const file = formData.get("file");
-    
+
     if (file && file instanceof File && file.size > 0) {
       uploadFormData.append("file", file);
     }
