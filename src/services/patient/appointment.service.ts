@@ -78,8 +78,9 @@ export async function getMyAppointments(queryString?: string) {
         },
       },
     );
-
+    
     const result = await response.json();
+
     return result;
   } catch (error: any) {
     console.error("Error fetching appointments:", error);
@@ -96,7 +97,7 @@ export async function getMyAppointments(queryString?: string) {
 
 export async function getAppointmentById(appointmentId: string) {
   try {
-    const response = await serverFetch.get("/appointment/my-appointment", {
+    const response = await serverFetch.get("/appointment/my-appointments", {
       next: {
         tags: ["my-appointments", `appointment-${appointmentId}`],
         revalidate: 180,
