@@ -1,15 +1,17 @@
-import { IErrInputField } from "../../types";
-
+export interface IInputErrorState {
+  success: boolean;
+  errors: {
+    field: string;
+    message: string;
+  }[];
+}
 export const getInputFieldError = (
   fieldName: string,
-  state: { errors: IErrInputField[] },
+  state: IInputErrorState
 ) => {
-  if (state && state?.errors) {
-    const error =
-      state?.errors.find((err: IErrInputField) => err?.field === fieldName)
-        ?.message || "";
-
-    return error;
+  if (state && state.errors) {
+    const error = state.errors.find((err) => err.field === fieldName);
+    return error ? error.message : null;
   } else {
     return null;
   }

@@ -1,14 +1,14 @@
-"use server";
-
-import { getUserInfo } from "@/services/auth/getUserInfo";
-import { IUserInfo } from "../../../../types/user.interface";
-import DashboardSidebarContent from "./DashboardSidebarContent";
-import { getDefaultDashboardRoute } from "@/lib/auth.utils";
+import { getDefaultDashboardRoute } from "@/lib/auth-utils";
 import { getNavItemsByRole } from "@/lib/navItems.config";
+import { getUserInfo } from "@/services/auth/getUserInfo";
+import { NavSection } from "@/types/dashboard.interface";
+import { UserInfo } from "@/types/user.interface";
+import DashboardSidebarContent from "./DashboardSidebarContent";
 
 const DashboardSidebar = async () => {
-  const userInfo = (await getUserInfo()) as IUserInfo;
-  const navItems = getNavItemsByRole(userInfo.role);
+  const userInfo = (await getUserInfo()) as UserInfo;
+
+  const navItems: NavSection[] = await getNavItemsByRole(userInfo.role);
   const dashboardHome = getDefaultDashboardRoute(userInfo.role);
 
   return (

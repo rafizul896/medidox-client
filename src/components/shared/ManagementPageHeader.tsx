@@ -1,14 +1,13 @@
 "use client";
-
-import { LucideIcon, PlusIcon } from "lucide-react";
+import { LucideIcon, Plus } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
 
-interface IManagementPageHeaderProps {
+interface ManagementPageHeaderProps {
   title: string;
   description?: string;
   action?: {
-    icon: LucideIcon;
+    icon?: LucideIcon;
     label: string;
     onClick: () => void;
   };
@@ -18,11 +17,10 @@ interface IManagementPageHeaderProps {
 const ManagementPageHeader = ({
   title,
   description,
-  children,
   action,
-}: IManagementPageHeaderProps) => {
-  const Icon = action?.icon || PlusIcon;
-
+  children,
+}: ManagementPageHeaderProps) => {
+  const Icon = action?.icon || Plus;
   return (
     <div className="flex items-center justify-between">
       <div>

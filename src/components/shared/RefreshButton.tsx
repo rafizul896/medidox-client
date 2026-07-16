@@ -1,11 +1,10 @@
 "use client";
-
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Button } from "../ui/button";
 
-interface IRefreshButtonProps {
+interface RefreshButtonProps {
   size?: "sm" | "default" | "lg";
   variant?: "default" | "outline" | "ghost";
   showLabel?: boolean;
@@ -15,16 +14,15 @@ const RefreshButton = ({
   size = "default",
   variant = "default",
   showLabel = true,
-}: IRefreshButtonProps) => {
+}: RefreshButtonProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleRefresh = () => {
     startTransition(() => {
-      router.refresh();
+      router.push(window.location.pathname);
     });
   };
-
   return (
     <Button
       size={size}

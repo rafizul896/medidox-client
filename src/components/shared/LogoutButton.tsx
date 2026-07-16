@@ -1,17 +1,16 @@
 "use client";
 
-import { logOutUser } from "@/services/auth/logoutUser";
+import { logoutUser } from "@/services/auth/logoutUser";
 import { Button } from "../ui/button";
 
 const LogoutButton = () => {
   const handleLogout = async () => {
-    await logOutUser();
+    await logoutUser();
   };
-
   return (
-    <>
-      <Button variant={"destructive"} onClick={handleLogout}>Logout</Button>
-    </>
+    <Button variant={"destructive"} onClick={handleLogout}>
+      Logout
+    </Button>
   );
 };
 

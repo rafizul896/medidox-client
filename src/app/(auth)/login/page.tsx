@@ -1,11 +1,4 @@
-import LoginForm from "@/components/modules/Auth/LoginForm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import LoginForm from "@/components/login-form";
 
 const LoginPage = async ({
   searchParams,
@@ -13,20 +6,17 @@ const LoginPage = async ({
   searchParams?: Promise<{ redirect?: string }>;
 }) => {
   const params = (await searchParams) || {};
-
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl">Welcome Back</CardTitle>
-          <CardDescription>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md space-y-6 rounded-lg border p-8 shadow-lg">
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-bold">Welcome Back</h1>
+          <p className="text-gray-500">
             Enter your credentials to access your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <LoginForm redirect={params.redirect} />
-        </CardContent>
-      </Card>
+          </p>
+        </div>
+        <LoginForm redirect={params.redirect} />
+      </div>
     </div>
   );
 };
