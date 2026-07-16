@@ -115,7 +115,7 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
     );
   };
 
-  if (appointments.length === 0) {
+  if (appointments?.length === 0) {
     return (
       <Card className="border-dashed">
         <CardContent className="flex flex-col items-center justify-center py-12">
@@ -132,22 +132,23 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
       </Card>
     );
   }
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {appointments.map((appointment) => (
+      {appointments?.map((appointment) => (
         <Card
-          key={appointment.id}
+          key={appointment?.id}
           className="hover:shadow-lg transition-shadow"
         >
           <CardContent className="pt-6 space-y-4">
             {/* Status and Review Badge */}
             <div className="flex justify-between items-start gap-2 flex-wrap">
               <div className="flex gap-2 flex-wrap">
-                {getStatusBadge(appointment.status)}
-                {getPaymentStatusBadge(appointment.paymentStatus)}
+                {getStatusBadge(appointment?.status)}
+                {getPaymentStatusBadge(appointment?.paymentStatus)}
               </div>
               <div className="flex gap-2 flex-wrap">
-                {appointment.prescription && (
+                {appointment?.prescription && (
                   <Badge
                     variant="outline"
                     className="bg-green-50 text-green-700"
@@ -156,8 +157,8 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
                     Prescription
                   </Badge>
                 )}
-                {appointment.status === AppointmentStatus.COMPLETED &&
-                  !appointment.review && (
+                {appointment?.status === AppointmentStatus.COMPLETED &&
+                  !appointment?.review && (
                     <Badge
                       variant="outline"
                       className="bg-amber-50 text-amber-700 border-amber-300 animate-pulse"
@@ -177,43 +178,43 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg">
-                    {appointment.doctor?.name || "N/A"}
+                    {appointment?.doctor?.name || "N/A"}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {appointment.doctor?.designation || "Doctor"}
+                    {appointment?.doctor?.designation || "Doctor"}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Specialties */}
-            {appointment.doctor?.doctorSpecialties &&
-              appointment.doctor.doctorSpecialties.length > 0 && (
+            {appointment?.doctor?.doctorSpecialties &&
+              appointment?.doctor.doctorSpecialties.length > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
                   <Stethoscope className="h-4 w-4 text-muted-foreground" />
-                  {appointment.doctor.doctorSpecialties
+                  {appointment?.doctor.doctorSpecialties
                     .slice(0, 2)
                     .map((ds, idx) => (
                       <Badge key={idx} variant="secondary" className="text-xs">
                         {ds.specialities?.title || "N/A"}
                       </Badge>
                     ))}
-                  {appointment.doctor.doctorSpecialties.length > 2 && (
+                  {appointment?.doctor.doctorSpecialties.length > 2 && (
                     <Badge variant="secondary" className="text-xs">
-                      +{appointment.doctor.doctorSpecialties.length - 2} more
+                      +{appointment?.doctor.doctorSpecialties.length - 2} more
                     </Badge>
                   )}
                 </div>
               )}
 
             {/* Schedule */}
-            {appointment.schedule && (
+            {appointment?.schedule && (
               <div className="space-y-2 bg-gray-50 rounded-lg p-3">
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium">
                     {format(
-                      new Date(appointment.schedule.startDateTime),
+                      new Date(appointment?.schedule.startDateTime),
                       "EEEE, MMM d, yyyy"
                     )}
                   </span>
@@ -222,21 +223,21 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
                     {format(
-                      new Date(appointment.schedule.startDateTime),
+                      new Date(appointment?.schedule.startDateTime),
                       "h:mm a"
                     )}{" "}
                     -{" "}
                     {format(
-                      new Date(appointment.schedule.endDateTime),
+                      new Date(appointment?.schedule.endDateTime),
                       "h:mm a"
                     )}
                   </span>
                 </div>
-                {appointment.status === AppointmentStatus.SCHEDULED &&
-                  appointment.schedule.startDateTime && (
+                {appointment?.status === AppointmentStatus.SCHEDULED &&
+                  appointment?.schedule.startDateTime && (
                     <div className="pt-2 border-t border-gray-200">
                       <AppointmentCountdown
-                        appointmentDateTime={appointment.schedule.startDateTime}
+                        appointmentDateTime={appointment?.schedule.startDateTime}
                       />
                     </div>
                   )}
@@ -244,22 +245,22 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
             )}
 
             {/* Address */}
-            {appointment.doctor?.address && (
+            {appointment?.doctor?.address && (
               <div className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
                 <span className="line-clamp-2">
-                  {appointment.doctor.address}
+                  {appointment?.doctor.address}
                 </span>
               </div>
             )}
 
             {/* Review Status */}
-            {appointment.status === AppointmentStatus.COMPLETED && (
+            {appointment?.status === AppointmentStatus.COMPLETED && (
               <div>
-                {appointment.review ? (
+                {appointment?.review ? (
                   <div className="flex items-center gap-2 text-sm text-yellow-600 bg-yellow-50 rounded-lg p-2">
                     <Star className="h-4 w-4 fill-yellow-600" />
-                    <span>Rated {appointment.review.rating}/5</span>
+                    <span>Rated {appointment?.review.rating}/5</span>
                   </div>
                 ) : (
                   <div className="text-sm text-muted-foreground bg-gray-50 rounded-lg p-2">
@@ -273,19 +274,19 @@ const AppointmentsList = ({ appointments }: AppointmentsListProps) => {
           <CardFooter className="border-t pt-4">
             <div className="flex gap-2 w-full">
               <Button variant="outline" size="sm" className="flex-1" asChild>
-                <Link href={`/dashboard/my-appointments/${appointment.id}`}>
+                <Link href={`/dashboard/my-appointments/${appointment?.id}`}>
                   View Details
                 </Link>
               </Button>
-              {appointment.paymentStatus === PaymentStatus.UNPAID &&
-                appointment.status !== AppointmentStatus.CANCELED && (
+              {appointment?.paymentStatus === PaymentStatus.UNPAID &&
+                appointment?.status !== AppointmentStatus.CANCELED && (
                   <Button
-                    onClick={() => handlePayNow(appointment.id)}
-                    disabled={processingPaymentId === appointment.id}
+                    onClick={() => handlePayNow(appointment?.id)}
+                    disabled={processingPaymentId === appointment?.id}
                     size="sm"
                     className="flex-1 bg-emerald-600 hover:bg-emerald-700"
                   >
-                    {processingPaymentId === appointment.id ? (
+                    {processingPaymentId === appointment?.id ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Processing...
